@@ -9,7 +9,7 @@ export const NavLinks = ({ links, mobile, sidebarClose }: NavLinksProps) => {
     <nav
       className={cn(
         mobile
-          ? 'text-neutral-darkest flex flex-col items-start gap-5 font-bold md:hidden'
+          ? 'flex flex-col items-start gap-5 font-bold text-neutral-darkest md:hidden'
           : 'hidden items-center gap-8 md:flex',
       )}
     >
@@ -21,7 +21,7 @@ export const NavLinks = ({ links, mobile, sidebarClose }: NavLinksProps) => {
           key={item.id}
           className={cn(
             'relative duration-200 hover:text-neutral-darkest-blue hover:after:opacity-100',
-            'after:absolute after:-bottom-[52px] after:block after:h-1 after:w-full after:bg-primary-orange after:opacity-0 after:duration-200 after:content-[""]',
+            'after:absolute after:top-20 after:block after:h-1 after:w-full after:bg-primary-orange after:opacity-0 after:duration-200 after:content-[""]',
             mobile
               ? 'text-neutral-darkest after:hidden'
               : 'text-neutral-dark-gray',

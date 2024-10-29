@@ -1,23 +1,42 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = 0
+const initialState = {
+  type: '',
+  quantity: 0,
+}
 
 export const cartSlice = createSlice({
   name: 'cart',
   initialState,
+
   reducers: {
-    add: (state) => {
-      return state + 1
-    },
-    remove: (state) => {
-      if (state === 0) return state
-      return state - 1
-    },
-    reset: (state) => {
-      state = 0
-      return state
+    cartConfig: (state, action) => {
+      if (action.payload.type === 'removed' && state.quantity < 2) {
+        return {
+          ...state,
+          type: '',
+          quantity: 0,
+        }
+      }
+
+      if (action.payload.type === 'removed') {
+        action.payload.quantity -= 1
+      }
+
+      if (action.payload.type === 'add') {
+        return {
+          ...state,
+          quantity: state.quantity + 1,
+        }
+      }
+
+      return {
+        ...state,
+        type: action.payload.type,
+        quantity: action.payload.quantity,
+      }
     },
   },
 })
 
-export const { add, remove, reset } = cartSlice.actions
+export const { cartConfig } = cartSlice.actions

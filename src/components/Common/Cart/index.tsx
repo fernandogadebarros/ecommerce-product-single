@@ -5,17 +5,23 @@ import { ShoppingCart } from 'lucide-react'
 import { Trash2 } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { reset } from '@/store/reducers/cart'
 import * as Button from '@/components/Form/Button'
+import { cartConfig } from '@/store/reducers/cart'
 
 export const Cart = () => {
   const [openCart, setOpenCart] = React.useState(false)
-  const cartCounter = useSelector((state: { cart: number }) => state.cart)
+  const state = useSelector(
+    (state: { cart: { type: string; quantity: number } }) => state.cart,
+  )
   const dispatch = useDispatch()
 
   const cartHandler = () => {
     setOpenCart((open) => !open)
   }
+
+  const isVisibleCart =
+    (state.quantity > 0 && state.type === 'added') ||
+    (state.quantity > 0 && state.type === 'removed')
 
   return (
     <div className="md:relative">
@@ -23,9 +29,9 @@ export const Cart = () => {
         className="relative bg-transparent hover:bg-transparent"
         onClick={cartHandler}
       >
-        {cartCounter > 0 && (
+        {isVisibleCart && (
           <span className="absolute right-3 top-3 flex h-4 w-6 items-center justify-center rounded-full bg-primary-orange text-xs font-bold text-white">
-            {cartCounter}
+            {state.quantity}
           </span>
         )}
         <ShoppingCart className="text-neutral-darkest-blue" />
@@ -37,12 +43,12 @@ export const Cart = () => {
             <p className="font-bold text-neutral-darkest-blue">Cart</p>
           </header>
           <div className="p-6">
-            {cartCounter > 0 ? (
+            {isVisibleCart ? (
               <React.Fragment>
                 <div className="grid grid-cols-[50px_1fr_16px] items-center gap-4">
                   <span className="relative block h-12 w-12 rounded-lg">
                     <Image
-                      src="/assets/image-product-1-thumbnail.jpg"
+                      src="/assets/image-product-1-thumbnail.webp"
                       alt="Image Product"
                       className="rounded-lg"
                       fill
@@ -56,17 +62,22 @@ export const Cart = () => {
                     <span className="flex justify-start gap-1 text-neutral-gray">
                       <span>$125.00 x</span>
                       <span className="inline-block w-3 text-center">
-                        {cartCounter}
+                        {state.quantity}
                       </span>
                       <span className="flex justify-center font-bold text-neutral-darkest-blue">
-                        ${(cartCounter * 125).toFixed(2)}
+                        ${(state.quantity * 125).toFixed(2)}
                       </span>
                     </span>
                   </div>
                   <button
                     onClick={() => {
-                      dispatch(reset())
-                      cartHandler()
+                      dispatch(
+                        cartConfig({
+                          type: 'removed',
+                          quantity: state.quantity,
+                        }),
+                      )
+                      if (state.quantity === 0) cartHandler()
                     }}
                   >
                     <Trash2 className="h-4 w-4 text-black/30" />
